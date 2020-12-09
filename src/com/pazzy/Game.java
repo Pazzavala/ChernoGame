@@ -2,6 +2,9 @@ package com.pazzy;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 public class Game extends Canvas implements Runnable{
     private static final long serialVersionUID = 1L;
@@ -14,6 +17,10 @@ public class Game extends Canvas implements Runnable{
     private Thread thread;
     private JFrame frame;
     private boolean running = false;
+        // Creating an image
+    private BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        // Accessing that image
+    private int[] pixels = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 
         // Constructor First thing that will happen
     public Game() {
@@ -46,8 +53,27 @@ public class Game extends Canvas implements Runnable{
         // run method - Game loop
     public void run() {
         while (running) {
-            System.out.println("Hello bitchess.....");
+            update();
+            render();
         }
+    }
+
+    public void update() {
+
+    }
+        // buffer strategy
+    public void render() {
+        BufferStrategy bs = getBufferStrategy();
+        if(bs  == null) {   // always have it at 3
+            createBufferStrategy(3);
+            return;
+        }
+
+        Graphics g = bs.getDrawGraphics();
+        g.setColor(Color.BLACK);
+        g.fillRect(0,0, getWidth(), getHeight());
+        g.dispose();    // remove graphics after every loop
+        bs.show();
     }
 
     public static void main(String[] args) {
